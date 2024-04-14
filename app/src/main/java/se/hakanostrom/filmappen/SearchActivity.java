@@ -1,5 +1,9 @@
 package se.hakanostrom.filmappen;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -18,30 +22,31 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import se.hakanostrom.filmappen.api.OmdbClient;
 import se.hakanostrom.filmappen.api.OmdbInterface;
+import se.hakanostrom.filmappen.api.OmdbPosterClient;
+import se.hakanostrom.filmappen.api.OmdbPosterInterface;
+import se.hakanostrom.filmappen.model.Favoritfilm;
 import se.hakanostrom.filmappen.model.SearchResult;
 
 public class SearchActivity extends AppCompatActivity {
 
-    OmdbInterface omdbInterface;
+    OmdbInterface omdbClient;
     EditText etSokord;
     TextView tvSokresultat;
     ListView lvSearchResults;
     ArrayAdapter<SearchResult.SingleResult> aaSearchResults;
-
-
-    String[] tutorials
-            = {"Algorithms", "Data Structures",
-            "Languages", "Interview Corner",
-            "GATE", "ISRO CS", "xxx", "yyy", "zzz",
-            "UGC NET CS", "CS Subjects",
-            "Web Technologies"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         // Retrofit client
-        omdbInterface = OmdbClient.getClient(SearchActivity.this).create(OmdbInterface.class);
+        omdbClient = OmdbClient.getClient(SearchActivity.this).create(OmdbInterface.class);
 
         // Global views
         etSokord = findViewById(R.id.etSokord);
@@ -78,9 +83,10 @@ public class SearchActivity extends AppCompatActivity {
         lvSearchResults.setAdapter(aaSearchResults);
 
         lvSearchResults.setOnItemClickListener((parent, view, position, id) -> {
-            Log.d(SearchActivity.class.getCanonicalName(), String.format("Är du säker på att du vill spara %s som en favorit? Ange även ditt betyg (1-10)", aaSearchResults.getItem(position).title));
 
-            Log.d(SearchActivity.class.getCanonicalName(), aaSearchResults.getItem(position).imdbID);
+            SearchResult.SingleResult selectedItem = aaSearchResults.getItem(position);
+
+            Log.d(SearchActivity.class.getCanonicalName(), selectedItem.imdbID);
 
             // Alerta
 
@@ -88,19 +94,29 @@ public class SearchActivity extends AppCompatActivity {
             final EditText edittext = new EditText(SearchActivity.this);
             edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
             alert.setView(edittext);
-            alert.setTitle(aaSearchResults.getItem(position).title);
+            alert.setTitle(selectedItem.title);
             alert.setMessage("Vill du lägga till denna film som en favorit? Ange även ditt betyg (1-10)");
 
             alert.setPositiveButton("Ja", (dialog, whichButton) -> {
-                String YouEditTextValue = edittext.getText().toString();
+                String betyg = edittext.getText().toString();
 
-                SearchActivity.this.finish();
+                // Spara ned bild/poster
+                savePoster(selectedItem.imdbID);
+
+                // Hämta detaljer
+                Favoritfilm favoritfilm = getDetails(selectedItem.imdbID);
+
+                // Spara data i databas
+                saveToDatabase(favoritfilm);
+
+                // Stäng sidan
+                //SearchActivity.this.finish();
             });
 
             alert.setNegativeButton("Avbryt", (dialog, whichButton) -> {
-                // what ever you want to do with No option.
+                // le och vinka
             });
-            
+
             alert.show();
 
         });
@@ -113,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
         else {
             Log.d(SearchActivity.this.getLocalClassName(), "Sök nu på " + sokord);
 
-            Call<SearchResult> call = omdbInterface.searchMovies(getResources().getString(R.string.api_key), sokord);
+            Call<SearchResult> call = omdbClient.searchMovies(getResources().getString(R.string.api_key), sokord);
             call.enqueue(new Callback<SearchResult>() {
                 @Override
                 public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
@@ -124,9 +140,6 @@ public class SearchActivity extends AppCompatActivity {
                     } else {
                         tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
                         Log.d("TAG", response.code() + "");
-                        Log.i(this.getClass().toString(), "totalResults: " + searchResult.totalResults);
-                        Log.i(this.getClass().toString(), "antal singleresults: " + searchResult.singleResultList.size());
-                        Log.i(this.getClass().toString(), "Första titeln: " + searchResult.singleResultList.get(0).title);
 
                         aaSearchResults.clear();
                         searchResult.singleResultList.forEach(singleResult -> {
@@ -143,5 +156,64 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void savePoster(String imdbId) {
+        // Retrofit poster client
+        OmdbPosterInterface omdbPosterClient = OmdbPosterClient.getClient(SearchActivity.this).create(OmdbPosterInterface.class);
+
+        Call<ResponseBody> call = omdbPosterClient.getMoviePoster(getResources().getString(R.string.api_key), imdbId);
+
+        Log.d(SearchActivity.class.getCanonicalName(), "Making request to " + call.request().url());
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.code() >= 400)
+                    Toast.makeText(SearchActivity.this, "Filmposter kan inte hittas ", Toast.LENGTH_SHORT).show();
+                else {
+                    // Ta in bitström
+                    InputStream bis = new BufferedInputStream(response.body().byteStream());
+                    Bitmap bitmap = BitmapFactory.decodeStream(bis);
+
+                    //spara bitström
+
+                    ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                    File directory = cw.getDir("movie-poster", Context.MODE_PRIVATE);
+                    if (!directory.exists()) {
+                        directory.mkdir();
+                    }
+                    File posterpath = new File(directory, imdbId + ".png");
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(posterpath);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                        fos.close();
+                    } catch (IOException e) {
+                        Log.e(SearchActivity.class.getCanonicalName(), e.getMessage());
+                        Toast.makeText(SearchActivity.this, "Fel vid sparande av poster", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                Log.e(SearchActivity.class.getCanonicalName(), throwable.getMessage());
+                Toast.makeText(SearchActivity.this, "Nedladdningsfel av poster", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    private Favoritfilm getDetails(String imdbId) {
+
+        return new Favoritfilm();
+    }
+
+    private void saveToDatabase(Favoritfilm favoritfilm) {
+
     }
 }

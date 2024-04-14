@@ -23,7 +23,7 @@ public class SearchResult {
 
         @Override
         public String toString() {
-            return title;
+            return String.format("%s (%s)", title, year);
         }
 
         @SerializedName("Year")
