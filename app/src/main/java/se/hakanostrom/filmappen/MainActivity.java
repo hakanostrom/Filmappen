@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         lvFavoritfilmer.setAdapter(aaFavoritfilmer);
 
         lvFavoritfilmer.setOnItemClickListener((parent, view, position, id) -> {
-
+            // Öppna modal eller alert med info + (ev) bild
         });
 
         // db
@@ -98,10 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         runOnUiThread(() -> {
             aaFavoritfilmer.clear();
-            favvosar.forEach(favoritfilm -> {
-                Log.d(MainActivity.class.getCanonicalName(), favoritfilm.getTitle() + " - " + favoritfilm.getPlot());
-                aaFavoritfilmer.add(favoritfilm);
-            });
+            favvosar.forEach(favoritfilm -> aaFavoritfilmer.add(favoritfilm));
         });
 
     }

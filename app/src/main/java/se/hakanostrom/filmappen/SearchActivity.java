@@ -92,8 +92,6 @@ public class SearchActivity extends AppCompatActivity {
 
             SearchResult.SingleResult selectedItem = aaSearchResults.getItem(position);
 
-            Log.d(SearchActivity.class.getCanonicalName(), selectedItem.imdbID);
-
             // Alerta
 
             AlertDialog.Builder alert = new AlertDialog.Builder(SearchActivity.this);
@@ -156,8 +154,6 @@ public class SearchActivity extends AppCompatActivity {
                         tvSokresultat.setText(searchResult.error);
                     } else {
                         tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
-                        Log.d("TAG", response.code() + "");
-
                         aaSearchResults.clear();
                         searchResult.singleResultList.forEach(singleResult -> {
                             aaSearchResults.add(singleResult);
@@ -180,8 +176,6 @@ public class SearchActivity extends AppCompatActivity {
         OmdbPosterInterface omdbPosterClient = OmdbPosterClient.getClient(SearchActivity.this).create(OmdbPosterInterface.class);
 
         Call<ResponseBody> call = omdbPosterClient.getMoviePoster(getResources().getString(R.string.api_key), imdbId);
-
-        Log.d(SearchActivity.class.getCanonicalName(), "Making request to " + call.request().url());
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
