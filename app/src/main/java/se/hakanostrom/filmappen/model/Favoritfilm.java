@@ -1,10 +1,27 @@
 package se.hakanostrom.filmappen.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Favoritfilm {
-    private String imdbID;
-    private String imdbRating;
-    private String Title;
-    private String Type;
+    @PrimaryKey
+    @NonNull
+    public String imdbID;
+    @ColumnInfo(name = "imdb_rating")
+    public String imdbRating;
+    @ColumnInfo(name = "title")
+    public String Title;
+    @ColumnInfo(name = "year")
+    public String Year;
+    @ColumnInfo(name = "type")
+    public String Type;
+    @ColumnInfo(name = "valt_betyg")
+    public String valtBetyg;
+    @ColumnInfo(name = "plot")
+    public String Plot;
 
     public String getImdbRating() {
         return imdbRating;
@@ -24,6 +41,15 @@ public class Favoritfilm {
         return this;
     }
 
+    public String getYear() {
+        return Year;
+    }
+
+    public Favoritfilm setYear(String year) {
+        Year = year;
+        return this;
+    }
+
     public String getPlot() {
         return Plot;
     }
@@ -33,7 +59,6 @@ public class Favoritfilm {
         return this;
     }
 
-    private String Plot;
 
     public String getValtBetyg() {
         return valtBetyg;
@@ -44,7 +69,6 @@ public class Favoritfilm {
         return this;
     }
 
-    private String valtBetyg;
 
     public String getImdbID() {
         return imdbID;
@@ -62,5 +86,10 @@ public class Favoritfilm {
     public Favoritfilm setTitle(String title) {
         Title = title;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", getTitle(), getYear());
     }
 }

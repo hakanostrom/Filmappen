@@ -36,6 +36,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.converter.gson)
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
 
     implementation(libs.appcompat)
     implementation(libs.material)

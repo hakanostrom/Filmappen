@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Room;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -36,6 +37,8 @@ import se.hakanostrom.filmappen.api.OmdbClient;
 import se.hakanostrom.filmappen.api.OmdbInterface;
 import se.hakanostrom.filmappen.api.OmdbPosterClient;
 import se.hakanostrom.filmappen.api.OmdbPosterInterface;
+import se.hakanostrom.filmappen.database.FavoritfilmDao;
+import se.hakanostrom.filmappen.database.FilmappenDatabas;
 import se.hakanostrom.filmappen.model.Favoritfilm;
 import se.hakanostrom.filmappen.model.SearchResult;
 
@@ -46,6 +49,7 @@ public class SearchActivity extends AppCompatActivity {
     TextView tvSokresultat;
     ListView lvSearchResults;
     ArrayAdapter<SearchResult.SingleResult> aaSearchResults;
+    FilmappenDatabas db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,9 @@ public class SearchActivity extends AppCompatActivity {
         findViewById(R.id.btnSok).setOnClickListener(v -> {
             doSearch(String.valueOf(etSokord.getText()));
         });
+
+        // db
+        db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
 
         // resultlist
         aaSearchResults = new ArrayAdapter<SearchResult.SingleResult>(SearchActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
@@ -233,7 +240,8 @@ public class SearchActivity extends AppCompatActivity {
                     Toast.makeText(SearchActivity.this, "Filmens detaljer kan inte hittas ", Toast.LENGTH_SHORT).show();
                 } else {
                     Favoritfilm favoritfilm = response.body();
-                    saveToDatabase(favoritfilm);
+                    // Database operations in separate thread
+                    new Thread(() -> saveToDatabase(favoritfilm)).start();
                 }
 
 
@@ -252,6 +260,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private void saveToDatabase(Favoritfilm favoritfilm) {
 
-        Log.d(SearchActivity.class.getCanonicalName(), "Sparar till databas: " + favoritfilm.getTitle());
+        FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
+        favoritfilmDao.upsert(favoritfilm);
+
+        Log.d(SearchActivity.class.getCanonicalName(), "Sparat till databas: " + favoritfilm.getTitle());
     }
 }
