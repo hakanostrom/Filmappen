@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -69,7 +68,7 @@ public class SearchActivity extends AppCompatActivity {
 
         // searchbox
         etSokord.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_SEARCH)) {
+            if ((actionId == EditorInfo.IME_ACTION_SEARCH)) {
                 doSearch(String.valueOf(etSokord.getText()));
             }
             return false;
@@ -100,17 +99,24 @@ public class SearchActivity extends AppCompatActivity {
             alert.setPositiveButton("Ja", (dialog, whichButton) -> {
                 String betyg = edittext.getText().toString();
 
-                // Spara ned bild/poster
-                savePoster(selectedItem.imdbID);
+                try {
+                    // Hämta detaljer
+                    Favoritfilm favoritfilm = getDetails(selectedItem.imdbID);
 
-                // Hämta detaljer
-                Favoritfilm favoritfilm = getDetails(selectedItem.imdbID);
+                    // Spara ned bild/poster
+                    savePoster(selectedItem.imdbID);
 
-                // Spara data i databas
-                saveToDatabase(favoritfilm);
+                    // Spara data i databas
+                    saveToDatabase(favoritfilm);
 
-                // Stäng sidan
-                //SearchActivity.this.finish();
+                    // Stäng sidan
+                    SearchActivity.this.finish();
+
+                } catch (IOException ioe) {
+                    Log.d("TAG", "Nu blev det fel " + ioe.getMessage());
+                    Toast.makeText(SearchActivity.this, "Kommunikationsfel", Toast.LENGTH_SHORT).show();
+
+                }
             });
 
             alert.setNegativeButton("Avbryt", (dialog, whichButton) -> {
@@ -121,6 +127,10 @@ public class SearchActivity extends AppCompatActivity {
 
         });
     }
+
+    /*
+     Helper functions
+     */
 
     private void doSearch(String sokord) {
 
@@ -208,12 +218,18 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private Favoritfilm getDetails(String imdbId) {
+    private Favoritfilm getDetails(String imdbId) throws IOException {
 
-        return new Favoritfilm();
+        Call<Favoritfilm> call = omdbClient.getMovieById(getResources().getString(R.string.api_key), imdbId);
+
+        // Vi är nu i ett context där synkrona anrop kan tolereras
+        Favoritfilm favoritfilm = call.execute().body();
+
+        return favoritfilm;
     }
 
     private void saveToDatabase(Favoritfilm favoritfilm) {
 
+        Log.d(SearchActivity.class.getCanonicalName(), "Sparar till databas: " + favoritfilm.getTitle());
     }
 }
