@@ -1,6 +1,8 @@
 package se.hakanostrom.filmappen;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button btnNavSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +24,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        btnNavSearch = findViewById(R.id.nav_search);
+        btnNavSearch.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(i);
+        });
+
     }
 }
