@@ -106,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 try {
                     // Hämta detaljer
-                    getDetails(selectedItem.imdbID);
+                    getDetails(selectedItem.imdbID, betyg);
 
                     // Spara ned bild/poster
                     savePoster(selectedItem.imdbID);
@@ -219,12 +219,9 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void getDetails(String imdbId) throws IOException {
+    private void getDetails(String imdbId, String betyg) throws IOException {
 
         Call<Favoritfilm> call = omdbClient.getMovieById(getResources().getString(R.string.api_key), imdbId);
-
-        //Favoritfilm favoritfilm = call.execute().body();
-
 
         call.enqueue(new Callback<Favoritfilm>() {
             @Override
@@ -234,10 +231,11 @@ public class SearchActivity extends AppCompatActivity {
                     Toast.makeText(SearchActivity.this, "Filmens detaljer kan inte hittas ", Toast.LENGTH_SHORT).show();
                 } else {
                     Favoritfilm favoritfilm = response.body();
+                    favoritfilm.setValtBetyg(betyg);
+
                     // Database operations in separate thread
                     new Thread(() -> saveToDatabase(favoritfilm)).start();
                 }
-
 
                 // Stäng sidan
                 SearchActivity.this.finish();

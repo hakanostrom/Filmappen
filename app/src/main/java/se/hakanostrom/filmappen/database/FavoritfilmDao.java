@@ -1,6 +1,7 @@
 package se.hakanostrom.filmappen.database;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -17,4 +18,7 @@ public interface FavoritfilmDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void upsert(Favoritfilm favoritfilm);
+
+    @Delete
+    void delete(Favoritfilm favoritfilm);
 }

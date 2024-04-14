@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +22,7 @@ import androidx.room.Room;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import se.hakanostrom.filmappen.database.FavoritfilmDao;
@@ -59,7 +61,41 @@ public class MainActivity extends AppCompatActivity {
         lvFavoritfilmer.setAdapter(aaFavoritfilmer);
 
         lvFavoritfilmer.setOnItemClickListener((parent, view, position, id) -> {
-            // Öppna modal eller alert med info + (ev) bild
+
+            Favoritfilm favoritfilm = aaFavoritfilmer.getItem(position);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            final ImageView imageView = new ImageView(MainActivity.this);
+
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("movie-poster", Context.MODE_PRIVATE);
+            File myPosterFile = new File(directory, String.format("%s.png", favoritfilm.getImdbID()));
+
+            if (myPosterFile.exists()) {
+                Bitmap myBitmap = BitmapFactory.decodeFile(myPosterFile.getAbsolutePath());
+                imageView.setImageBitmap(myBitmap);
+                alert.setView(imageView);
+            }
+
+            String alertMessage = String.format("Betyg: %s\n%s", favoritfilm.getValtBetyg(), favoritfilm.getPlot());
+
+            alert.setTitle(favoritfilm.getTitle());
+            alert.setMessage(alertMessage);
+
+            alert.setPositiveButton("stäng", (dialog, which) -> {
+
+            });
+
+            alert.setNegativeButton("ta bort", (dialog, which) -> {
+                aaFavoritfilmer.remove(favoritfilm);
+
+                new Thread(() -> {
+                    FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
+                    favoritfilmDao.delete(favoritfilm);
+                }).start();
+            });
+
+            alert.show();
         });
 
         // db
@@ -72,25 +108,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // DEBUG
-        // läs in bitström till fil
-
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("movie-poster", Context.MODE_PRIVATE);
-        File myPosterFile = new File(directory, "tt0066385.png");
-
-        if (myPosterFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(myPosterFile.getAbsolutePath());
-            ImageView ivPoster = findViewById(R.id.ivPosterPic);
-            ivPoster.setImageBitmap(myBitmap);
-        }
-
         // Database operations in separate thread
-        new Thread(this::populateFavoritfilmList).start();
+        new Thread(this::populateFavoritfilmListFromDb).start();
 
     }
 
-    private void populateFavoritfilmList() {
+    private void populateFavoritfilmListFromDb() {
 
         FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
         List<Favoritfilm> favvosar = favoritfilmDao.getAll();
@@ -98,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         runOnUiThread(() -> {
             aaFavoritfilmer.clear();
+            Collections.reverse(favvosar);
             favvosar.forEach(favoritfilm -> aaFavoritfilmer.add(favoritfilm));
         });
 
