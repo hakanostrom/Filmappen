@@ -101,16 +101,16 @@ public class SearchActivity extends AppCompatActivity {
 
                 try {
                     // Hämta detaljer
-                    Favoritfilm favoritfilm = getDetails(selectedItem.imdbID);
+                    getDetails(selectedItem.imdbID);
 
                     // Spara ned bild/poster
                     savePoster(selectedItem.imdbID);
 
-                    // Spara data i databas
-                    saveToDatabase(favoritfilm);
+                    // Spara data i databas (starta från async callback istället)
+                    //saveToDatabase(favoritfilm);
 
                     // Stäng sidan
-                    SearchActivity.this.finish();
+                    //SearchActivity.this.finish();
 
                 } catch (IOException ioe) {
                     Log.d("TAG", "Nu blev det fel " + ioe.getMessage());
@@ -218,14 +218,36 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private Favoritfilm getDetails(String imdbId) throws IOException {
+    private void getDetails(String imdbId) throws IOException {
 
         Call<Favoritfilm> call = omdbClient.getMovieById(getResources().getString(R.string.api_key), imdbId);
 
-        // Vi är nu i ett context där synkrona anrop kan tolereras
-        Favoritfilm favoritfilm = call.execute().body();
+        //Favoritfilm favoritfilm = call.execute().body();
 
-        return favoritfilm;
+
+        call.enqueue(new Callback<Favoritfilm>() {
+            @Override
+            public void onResponse(Call<Favoritfilm> call, Response<Favoritfilm> response) {
+
+                if (response.code() >= 400) {
+                    Toast.makeText(SearchActivity.this, "Filmens detaljer kan inte hittas ", Toast.LENGTH_SHORT).show();
+                } else {
+                    Favoritfilm favoritfilm = response.body();
+                    saveToDatabase(favoritfilm);
+                }
+
+
+                // Stäng sidan
+                SearchActivity.this.finish();
+            }
+
+            @Override
+            public void onFailure(Call<Favoritfilm> call, Throwable throwable) {
+
+            }
+        });
+
+
     }
 
     private void saveToDatabase(Favoritfilm favoritfilm) {
