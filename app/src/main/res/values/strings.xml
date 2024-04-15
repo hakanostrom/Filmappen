@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Filmappen</string>
+
+    <string name="app_title">FILMAPPEN</string>
+    <string name="app_home_subtitle">Mina favoritfilmer</string>
+    <string name="app_search_subtitle">Sök bland filmer</string>
+
+    <string name="database_name">filmappen-databas</string>
+
+    <!-- OMDB API -->
+    <string name="omdb_base_url">http://www.omdbapi.com</string>
+    <string name="omdb_poster_base_url">http://img.omdbapi.com</string>
+
+    <!-- Söksida -->
+    <string name="lbl_sok">Sök</string>
+    <string name="hint_sokord">Sökord</string>
+</resources>
