@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         lvFavoritfilmer = findViewById(R.id.lvFavoritfilmer);
         aaFavoritfilmer = new ArrayAdapter<Favoritfilm>(MainActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
         lvFavoritfilmer.setAdapter(aaFavoritfilmer);
+        lvFavoritfilmer.setEmptyView(findViewById(R.id.tvEmptyList));
 
         lvFavoritfilmer.setOnItemClickListener((parent, view, position, id) -> {
 
@@ -101,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         // db
         // borde läggas i en singleton ...
         db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
-
     }
 
     @Override
