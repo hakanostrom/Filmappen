@@ -19,7 +19,7 @@ public class Favoritfilm {
     @ColumnInfo(name = "type")
     public String Type;
     @ColumnInfo(name = "valt_betyg")
-    public String valtBetyg;
+    public int valtBetyg;
     @ColumnInfo(name = "plot")
     public String Plot;
 
@@ -60,11 +60,11 @@ public class Favoritfilm {
     }
 
 
-    public String getValtBetyg() {
+    public int getValtBetyg() {
         return valtBetyg;
     }
 
-    public Favoritfilm setValtBetyg(String valtBetyg) {
+    public Favoritfilm setValtBetyg(int valtBetyg) {
         this.valtBetyg = valtBetyg;
         return this;
     }

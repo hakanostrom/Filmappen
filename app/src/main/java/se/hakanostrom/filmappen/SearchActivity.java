@@ -5,12 +5,12 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,42 +94,37 @@ public class SearchActivity extends AppCompatActivity {
 
             // Alerta
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(SearchActivity.this);
-            final EditText edittext = new EditText(SearchActivity.this);
-            edittext.setInputType(InputType.TYPE_CLASS_NUMBER);
-            alert.setView(edittext);
-            alert.setTitle(selectedItem.title);
-            alert.setMessage("Vill du lägga till denna film som en favorit? Ange även ditt betyg (1-10)");
+            final NumberPicker numberPicker = new NumberPicker(SearchActivity.this);
+            numberPicker.setMaxValue(getResources().getInteger(R.integer.betyg_max));
+            numberPicker.setMinValue(getResources().getInteger(R.integer.betyg_min));
+            numberPicker.setValue(getResources().getInteger(R.integer.betyg_preselect));
 
-            alert.setPositiveButton("Ja", (dialog, whichButton) -> {
-                String betyg = edittext.getText().toString();
+            AlertDialog.Builder alert = new AlertDialog.Builder(SearchActivity.this)
+                    .setView(numberPicker)
+                    .setTitle(selectedItem.title)
+                    .setMessage("Vill du lägga till denna film som en favorit? Ange även ditt betyg (1-10)")
+                    .setPositiveButton("Ja", null)
+                    .setNegativeButton("Avbryt", null);
 
-                try {
-                    // Hämta detaljer
-                    getDetails(selectedItem.imdbID, betyg);
+            // Överlagra onClick i efterhand för att göra det möjligt att förhindra stängning
+            alert.show()
+                    .getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setOnClickListener(v -> {
+                        int betyg = numberPicker.getValue();
 
-                    // Spara ned bild/poster
-                    savePoster(selectedItem.imdbID);
+                        try {
+                            // Hämta detaljer
+                            getDetailsAndSaveToDatabase(selectedItem.imdbID, betyg);
 
-                    // Spara data i databas (starta från async callback istället)
-                    //saveToDatabase(favoritfilm);
+                            // Spara ned bild/poster
+                            savePoster(selectedItem.imdbID);
 
-                    // Stäng sidan
-                    //SearchActivity.this.finish();
+                        } catch (IOException ioe) {
+                            Log.d("TAG", "Nu blev det fel " + ioe.getMessage());
+                            Toast.makeText(SearchActivity.this, "Kommunikationsfel", Toast.LENGTH_SHORT).show();
 
-                } catch (IOException ioe) {
-                    Log.d("TAG", "Nu blev det fel " + ioe.getMessage());
-                    Toast.makeText(SearchActivity.this, "Kommunikationsfel", Toast.LENGTH_SHORT).show();
-
-                }
-            });
-
-            alert.setNegativeButton("Avbryt", (dialog, whichButton) -> {
-                // le och vinka
-            });
-
-            alert.show();
-
+                        }
+                    });
         });
     }
 
@@ -219,7 +214,7 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void getDetails(String imdbId, String betyg) throws IOException {
+    private void getDetailsAndSaveToDatabase(String imdbId, int betyg) throws IOException {
 
         Call<Favoritfilm> call = omdbClient.getMovieById(getResources().getString(R.string.api_key), imdbId);
 
