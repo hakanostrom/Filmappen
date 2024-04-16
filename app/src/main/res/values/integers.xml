@@ -1,0 +1,5 @@
+<resources>
+    <integer name="betyg_max">10</integer>
+    <integer name="betyg_min">1</integer>
+    <integer name="betyg_preselect">4</integer>
+</resources>

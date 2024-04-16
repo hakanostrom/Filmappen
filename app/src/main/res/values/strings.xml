@@ -2,7 +2,8 @@
     <string name="app_name">Filmappen</string>
 
     <string name="app_title">FILMAPPEN</string>
-    <string name="app_home_subtitle">Mina favoritfilmer</string>
+    <string name="app_home_subtitle">Spara dina favoritfilmer och ge dem ett betyg.</string>
+    <string name="empty_text">Här var det tomt, börja med att söka efter filmer att favoritmarkera</string>
     <string name="app_search_subtitle">Sök bland filmer</string>
 
     <string name="database_name">filmappen-databas</string>

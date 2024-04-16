@@ -1,6 +1,0 @@
-<resources>
-
-    <!-- OMDB API -->
-    <string name="api_key">ENTER_YOUR_OMDB_APIKEY</string>
-
-</resources>
