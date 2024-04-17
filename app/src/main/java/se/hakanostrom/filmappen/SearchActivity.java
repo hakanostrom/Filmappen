@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -134,12 +135,23 @@ public class SearchActivity extends AppCompatActivity {
 
     private void doSearch(String sokord) {
 
+        // Sökvilkor ('allt' är tom sträng)
+        String sokvillkor = "";
+
+        if (((RadioButton) findViewById(R.id.rbFilterMovie)).isChecked()) {
+            sokvillkor = "movie";
+        } else if (((RadioButton) findViewById(R.id.rbFilterSeries)).isChecked()) {
+            sokvillkor = "series";
+        } else if (((RadioButton) findViewById(R.id.rbFilterEpisode)).isChecked()) {
+            sokvillkor = "episodes";
+        }
+
         if (sokord.isEmpty())
             Toast.makeText(this, "Ange sökord", Toast.LENGTH_SHORT).show();
         else {
             Log.d(SearchActivity.this.getLocalClassName(), "Sök nu på " + sokord);
 
-            Call<SearchResult> call = omdbClient.searchMovies(getResources().getString(R.string.api_key), sokord);
+            Call<SearchResult> call = omdbClient.searchMovies(getResources().getString(R.string.api_key), sokord, sokvillkor);
             call.enqueue(new Callback<SearchResult>() {
                 @Override
                 public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
@@ -147,6 +159,7 @@ public class SearchActivity extends AppCompatActivity {
                     SearchResult searchResult = response.body();
                     if (searchResult.error != null) {
                         tvSokresultat.setText(searchResult.error);
+                        aaSearchResults.clear();
                     } else {
                         tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
                         aaSearchResults.clear();

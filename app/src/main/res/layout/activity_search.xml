@@ -7,58 +7,93 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:text="@string/app_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="48sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.051" />
-
-
-    <EditText
-        android:id="@+id/etSokord"
+    <LinearLayout
+        android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="@string/hint_sokord"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSearchRubrik">
 
-    <Button
-        android:id="@+id/btnSok"
-        android:layout_width="wrap_content"
+
+        <EditText
+            android:id="@+id/etSokord"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/hint_sokord"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            tools:layout_editor_absoluteY="134dp" />
+
+
+        <Button
+            android:id="@+id/btnSok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/lbl_sok"
+            tools:layout_editor_absoluteY="179dp" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/rgFilter"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="1"
-        android:text="@string/lbl_sok"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSokord" />
+        app:layout_constraintTop_toBottomOf="@+id/llSearch">
+
+        <RadioButton
+            android:id="@+id/rbFilterAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/search_alt_all" />
+
+        <RadioButton
+            android:id="@+id/rbFilterMovie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_movie" />
+
+        <RadioButton
+            android:id="@+id/rbFilterSeries"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_series" />
+
+        <RadioButton
+            android:id="@+id/rbFilterEpisode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_episode" />
+
+    </RadioGroup>
+
 
     <TextView
         android:id="@+id/tvSokresultat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Börja med att göra en sökning"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSok" />
+        app:layout_constraintTop_toBottomOf="@+id/rgFilter" />
 
     <ListView
         android:id="@+id/lvSearchResults"
@@ -71,5 +106,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSokresultat" />
+
+    <TextView
+        android:id="@+id/tvSearchRubrik"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="@string/app_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

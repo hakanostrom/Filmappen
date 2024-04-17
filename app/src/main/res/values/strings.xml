@@ -8,6 +8,11 @@
     <string name="btn_link_seaerch">Sök efter filmer och serier</string>
     <string name="database_name">filmappen-databas</string>
 
+    <string name="search_alt_all">Allt</string>
+    <string name="search_alt_movie">Film</string>
+    <string name="search_alt_series">Serie</string>
+    <string name="search_alt_episode">Episode</string>
+
     <!-- OMDB API -->
     <string name="omdb_base_url">http://www.omdbapi.com</string>
     <string name="omdb_poster_base_url">http://img.omdbapi.com</string>

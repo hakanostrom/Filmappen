@@ -12,6 +12,6 @@ public interface OmdbInterface {
     Call<Favoritfilm> getMovieById(@Query("apikey") String apiKey, @Query("i") String imdbId);
 
     @GET("?")
-    Call<SearchResult> searchMovies(@Query("apikey") String apiKey, @Query("s") String sokord);
+    Call<SearchResult> searchMovies(@Query("apikey") String apiKey, @Query("s") String sokord, @Query("type") String sokvillkor);
 
 }
