@@ -7,6 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <TextView
+        android:id="@+id/tvSearchRubrik"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="@string/app_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
     <LinearLayout
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
@@ -27,6 +42,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/hint_sokord"
+            android:autofillHints="@string/hint_sokord"
             android:imeOptions="actionSearch"
             android:inputType="text"
             tools:layout_editor_absoluteY="134dp" />
@@ -81,9 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/search_alt_episode" />
-
     </RadioGroup>
-
 
     <TextView
         android:id="@+id/tvSokresultat"
@@ -106,20 +120,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSokresultat" />
-
-    <TextView
-        android:id="@+id/tvSearchRubrik"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:text="@string/app_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="48sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.051" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

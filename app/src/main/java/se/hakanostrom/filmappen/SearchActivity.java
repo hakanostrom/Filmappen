@@ -78,9 +78,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             return false;
         });
-        findViewById(R.id.btnSok).setOnClickListener(v -> {
-            doSearch(String.valueOf(etSokord.getText()).trim());
-        });
+        findViewById(R.id.btnSok).setOnClickListener(v -> doSearch(String.valueOf(etSokord.getText()).trim()));
 
         // db
         db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
@@ -91,7 +89,7 @@ public class SearchActivity extends AppCompatActivity {
         findViewById(R.id.rbFilterEpisode).setOnClickListener(v -> clearResultList());
 
         // resultlist
-        aaSearchResults = new ArrayAdapter<SearchResult.SingleResult>(SearchActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
+        aaSearchResults = new ArrayAdapter<>(SearchActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
         lvSearchResults.setAdapter(aaSearchResults);
 
         lvSearchResults.setOnItemClickListener((parent, view, position, id) -> {
@@ -173,9 +171,7 @@ public class SearchActivity extends AppCompatActivity {
                     } else {
                         tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
                         aaSearchResults.clear();
-                        searchResult.singleResultList.forEach(singleResult -> {
-                            aaSearchResults.add(singleResult);
-                        });
+                        searchResult.singleResultList.forEach(singleResult -> aaSearchResults.add(singleResult));
 
                     }
                 }
@@ -214,7 +210,7 @@ public class SearchActivity extends AppCompatActivity {
                         directory.mkdir();
                     }
                     File posterpath = new File(directory, imdbId + ".png");
-                    FileOutputStream fos = null;
+                    FileOutputStream fos;
                     try {
                         fos = new FileOutputStream(posterpath);
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);

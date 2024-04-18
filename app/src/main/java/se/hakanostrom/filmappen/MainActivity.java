@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -34,7 +33,6 @@ import se.hakanostrom.filmappen.model.Favoritfilm;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnNavSearch;
     FilmappenDatabas db;
 
     ListView lvFavoritfilmer;
@@ -53,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // nav
-        btnNavSearch = findViewById(R.id.nav_search);
-        btnNavSearch.setOnClickListener(v -> {
+        findViewById(R.id.nav_search).setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, SearchActivity.class);
             startActivity(i);
         });
@@ -81,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         favoritfilmer = new ArrayList<>();
 
         lvFavoritfilmer = findViewById(R.id.lvFavoritfilmer);
-        aaFavoritfilmer = new ArrayAdapter<Favoritfilm>(MainActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
+        aaFavoritfilmer = new ArrayAdapter<>(MainActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
         lvFavoritfilmer.setAdapter(aaFavoritfilmer);
         lvFavoritfilmer.setEmptyView(findViewById(R.id.tvEmptyList));
 
@@ -108,9 +105,7 @@ public class MainActivity extends AppCompatActivity {
             alert.setMessage(alertMessage);
 
             alert.setPositiveButton("Stäng", null);
-            alert.setNegativeButton("Ändra betyg", (dialog, which) -> {
-                changeRating(position);
-            });
+            alert.setNegativeButton("Ändra betyg", (dialog, which) -> changeRating(position));
             alert.setNeutralButton("Ta bort", (dialog, which) -> {
                 aaFavoritfilmer.remove(favoritfilm);
 
@@ -135,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         ((RadioButton) findViewById(R.id.rbMainFilterAll)).setChecked(true);
 
         // Database operations in separate thread
-        new Thread(() -> populateFavoritfilmListFromDb("")).start();
+        new Thread(this::populateFavoritfilmListFromDb).start();
 
     }
 
@@ -171,14 +166,11 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void populateFavoritfilmListFromDb(String filterType) {
+    private void populateFavoritfilmListFromDb() {
 
         FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
         favoritfilmer = favoritfilmDao.getAll();
         Log.d(MainActivity.class.getCanonicalName(), "Found favvosar: " + favoritfilmer.size());
-
-        // filter result
-        favoritfilmer.stream().filter(f -> f.getType().equals(filterType));
 
         runOnUiThread(() -> {
             aaFavoritfilmer.clear();
