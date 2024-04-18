@@ -1,6 +1,11 @@
 <resources>
 
-    <!-- OMDB API -->
+    <!-- OMDB API
+        Skapa en egen API-nyckel och lägg in här. Ta bort kommentar på raden nedan och ta bort 'example' från filnamnet.
+        Filen kommer då att ignoreras av .gitignore och riskerar inte att commitas av misstag. Däremot går det alldeles utmärkt
+        att ha två string-resourcefiler då Android Studio kommer att läsa in båda (så länge namnen på egenskaperna är unika).
+     -->
+
     <!-- <string name="api_key">ENTER_YOUR_OMDB_APIKEY</string> -->
 
 </resources>
