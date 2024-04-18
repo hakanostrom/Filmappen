@@ -74,12 +74,12 @@ public class SearchActivity extends AppCompatActivity {
         // searchbox
         etSokord.setOnEditorActionListener((v, actionId, event) -> {
             if ((actionId == EditorInfo.IME_ACTION_SEARCH)) {
-                doSearch(String.valueOf(etSokord.getText()));
+                doSearch(String.valueOf(etSokord.getText()).trim());
             }
             return false;
         });
         findViewById(R.id.btnSok).setOnClickListener(v -> {
-            doSearch(String.valueOf(etSokord.getText()));
+            doSearch(String.valueOf(etSokord.getText()).trim());
         });
 
         // db
