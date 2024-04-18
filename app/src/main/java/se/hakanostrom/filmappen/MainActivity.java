@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.room.Room;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // db
-        // borde läggas i en singleton ...
-        db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
+        db = FilmappenDatabas.getInstance(getApplicationContext());
     }
 
     @Override

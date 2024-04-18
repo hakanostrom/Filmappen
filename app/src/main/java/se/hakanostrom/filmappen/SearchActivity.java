@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.room.Room;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -81,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
         findViewById(R.id.btnSok).setOnClickListener(v -> doSearch(String.valueOf(etSokord.getText()).trim()));
 
         // db
-        db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
+        db = FilmappenDatabas.getInstance(getApplicationContext());
 
         // filter radios
         findViewById(R.id.rbFilterMovie).setOnClickListener(v -> clearResultList());
