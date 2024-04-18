@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.RadioButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         lvFavoritfilmer.setOnItemClickListener((parent, view, position, id) -> {
 
-            Favoritfilm favoritfilm = aaFavoritfilmer.getItem(position);
+            final Favoritfilm favoritfilm = aaFavoritfilmer.getItem(position);
 
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             final ImageView imageView = new ImageView(MainActivity.this);
@@ -105,11 +107,11 @@ public class MainActivity extends AppCompatActivity {
             alert.setTitle(favoritfilm.getTitle());
             alert.setMessage(alertMessage);
 
-            alert.setPositiveButton("stäng", (dialog, which) -> {
-
+            alert.setPositiveButton("Stäng", null);
+            alert.setNegativeButton("Ändra betyg", (dialog, which) -> {
+                changeRating(position);
             });
-
-            alert.setNegativeButton("ta bort", (dialog, which) -> {
+            alert.setNeutralButton("Ta bort", (dialog, which) -> {
                 aaFavoritfilmer.remove(favoritfilm);
 
                 new Thread(() -> {
@@ -130,11 +132,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        ((RadioButton) findViewById(R.id.rbMainFilterAll)).setChecked(true);
+
         // Database operations in separate thread
         new Thread(() -> populateFavoritfilmListFromDb("")).start();
 
     }
 
+    /*
+     Helper functions
+     */
+    private void changeRating(int position) {
+
+        final Favoritfilm favoritfilm = aaFavoritfilmer.getItem(position);
+
+        final NumberPicker numberPicker = new NumberPicker(MainActivity.this);
+        numberPicker.setMaxValue(getResources().getInteger(R.integer.betyg_max));
+        numberPicker.setMinValue(getResources().getInteger(R.integer.betyg_min));
+        numberPicker.setValue(favoritfilm.getValtBetyg());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this)
+                .setView(numberPicker)
+                .setTitle("Ange nytt betyg")
+                .setPositiveButton("Spara betyg", (dialog, which) -> {
+
+                    // Favoritfilmen är en direktreferens till den i listan så den uppdateras automatiskt
+                    favoritfilm.setValtBetyg(numberPicker.getValue());
+
+                    // Spara i databas
+                    new Thread(() -> {
+                        FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
+                        favoritfilmDao.uppdateraBetyg(favoritfilm.getImdbID(), favoritfilm.getValtBetyg());
+                    }).start();
+
+                })
+                .setNegativeButton("Avbryt", null);
+
+        alert.show();
+    }
 
     private void populateFavoritfilmListFromDb(String filterType) {
 

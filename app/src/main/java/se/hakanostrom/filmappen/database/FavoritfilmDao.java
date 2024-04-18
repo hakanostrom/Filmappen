@@ -16,6 +16,9 @@ public interface FavoritfilmDao {
     @Query("SELECT * FROM favoritfilm")
     List<Favoritfilm> getAll();
 
+    @Query("UPDATE favoritfilm SET valt_betyg=:betyg WHERE imdbID=:imdbId")
+    void uppdateraBetyg(String imdbId, int betyg);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void upsert(Favoritfilm favoritfilm);
 
