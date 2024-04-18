@@ -132,9 +132,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     /*
      Helper functions
      */
+
     private void changeRating(int position) {
 
         final Favoritfilm favoritfilm = aaFavoritfilmer.getItem(position);

@@ -158,7 +158,7 @@ public class SearchActivity extends AppCompatActivity {
         else {
             Log.d(SearchActivity.this.getLocalClassName(), "Sök nu på " + sokord);
 
-            Call<SearchResult> call = omdbClient.searchMovies(getResources().getString(R.string.api_key), sokord, sokvillkor);
+            Call<SearchResult> call = omdbClient.searchMovies(getString(R.string.api_key), sokord, sokvillkor);
             call.enqueue(new Callback<SearchResult>() {
                 @Override
                 public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
@@ -188,7 +188,7 @@ public class SearchActivity extends AppCompatActivity {
         // Retrofit poster client
         OmdbPosterInterface omdbPosterClient = OmdbPosterClient.getClient(SearchActivity.this).create(OmdbPosterInterface.class);
 
-        Call<ResponseBody> call = omdbPosterClient.getMoviePoster(getResources().getString(R.string.api_key), imdbId);
+        Call<ResponseBody> call = omdbPosterClient.getMoviePoster(getString(R.string.api_key), imdbId);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -234,7 +234,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void getDetailsAndSaveToDatabase(String imdbId, int betyg) throws IOException {
 
-        Call<Favoritfilm> call = omdbClient.getMovieById(getResources().getString(R.string.api_key), imdbId);
+        Call<Favoritfilm> call = omdbClient.getMovieById(getString(R.string.api_key), imdbId);
 
         call.enqueue(new Callback<Favoritfilm>() {
             @Override
