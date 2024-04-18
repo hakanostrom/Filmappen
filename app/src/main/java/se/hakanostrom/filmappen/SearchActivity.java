@@ -163,15 +163,20 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
 
-                    SearchResult searchResult = response.body();
-                    if (searchResult.error != null) {
-                        tvSokresultat.setText(searchResult.error);
-                        aaSearchResults.clear();
+                    if (response.code() == 401) {
+                        Toast.makeText(SearchActivity.this, "Api-nyckeln är inte giltig", Toast.LENGTH_SHORT).show();
+                    } else if (response.code() >= 400) {
+                        Toast.makeText(SearchActivity.this, "Sökning kan inte genomföras ", Toast.LENGTH_SHORT).show();
                     } else {
-                        tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
-                        aaSearchResults.clear();
-                        searchResult.singleResultList.forEach(singleResult -> aaSearchResults.add(singleResult));
-
+                        SearchResult searchResult = response.body();
+                        if (searchResult.error != null) {
+                            tvSokresultat.setText(searchResult.error);
+                            aaSearchResults.clear();
+                        } else {
+                            tvSokresultat.setText(String.format("Hittade %s, visar %s första", searchResult.totalResults, searchResult.singleResultList.size()));
+                            aaSearchResults.clear();
+                            searchResult.singleResultList.forEach(singleResult -> aaSearchResults.add(singleResult));
+                        }
                     }
                 }
 
@@ -194,7 +199,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                if (response.code() >= 400)
+                if (response.code() == 401) {
+                    Toast.makeText(SearchActivity.this, "Api-nyckeln är inte giltig", Toast.LENGTH_SHORT).show();
+                } else if (response.code() >= 400)
                     Toast.makeText(SearchActivity.this, "Filmposter kan inte hittas ", Toast.LENGTH_SHORT).show();
                 else {
                     // Ta in bitström
@@ -240,7 +247,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Favoritfilm> call, Response<Favoritfilm> response) {
 
-                if (response.code() >= 400) {
+                if (response.code() == 401) {
+                    Toast.makeText(SearchActivity.this, "Api-nyckeln är inte giltig", Toast.LENGTH_SHORT).show();
+                } else if (response.code() >= 400) {
                     Toast.makeText(SearchActivity.this, "Filmens detaljer kan inte hittas ", Toast.LENGTH_SHORT).show();
                 } else {
                     Favoritfilm favoritfilm = response.body();
