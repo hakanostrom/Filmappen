@@ -11,7 +11,11 @@
     <string name="search_alt_all">Allt</string>
     <string name="search_alt_movie">Film</string>
     <string name="search_alt_series">Serie</string>
-    <string name="search_alt_episode">Episode</string>
+    <string name="search_alt_episode">Avsnitt</string>
+    <string name="search_alt_movie_key">movie</string>
+    <string name="search_alt_series_key">series</string>
+    <string name="search_alt_episode_key">episode</string>
+    <string name="search_start_new">Börja med att göra en sökning</string>
 
     <!-- OMDB API -->
     <string name="omdb_base_url">http://www.omdbapi.com</string>

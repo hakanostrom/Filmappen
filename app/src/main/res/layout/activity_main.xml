@@ -29,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/app_home_subtitle"
-        app:layout_constraintBottom_toTopOf="@+id/nav_search"
+        app:layout_constraintBottom_toTopOf="@+id/rgMainFilter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -45,6 +45,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvIngressMain" />
 
+
+    <RadioGroup
+        android:id="@+id/rgMainFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nav_search">
+
+        <RadioButton
+            android:id="@+id/rbMainFilterAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/search_alt_all" />
+
+        <RadioButton
+            android:id="@+id/rbMainFilterMovie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_movie" />
+
+        <RadioButton
+            android:id="@+id/rbMainFilterSeries"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_series" />
+
+        <RadioButton
+            android:id="@+id/rbMainFilterEpisode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search_alt_episode" />
+
+    </RadioGroup>
+
+
     <TextView
         android:id="@+id/tvEmptyList"
         android:layout_width="wrap_content"
@@ -56,7 +100,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nav_search" />
+        app:layout_constraintTop_toBottomOf="@+id/rgMainFilter" />
 
     <ListView
         android:id="@+id/lvFavoritfilmer"
@@ -68,6 +112,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nav_search" />
+        app:layout_constraintTop_toBottomOf="@+id/rgMainFilter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

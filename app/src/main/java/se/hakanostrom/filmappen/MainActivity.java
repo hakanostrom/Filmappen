@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import se.hakanostrom.filmappen.database.FavoritfilmDao;
 import se.hakanostrom.filmappen.database.FilmappenDatabas;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView lvFavoritfilmer;
     ArrayAdapter<Favoritfilm> aaFavoritfilmer;
+    List<Favoritfilm> favoritfilmer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,27 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
+        // filter radios
+        findViewById(R.id.rbMainFilterAll).setOnClickListener(v -> {
+            aaFavoritfilmer.clear();
+            aaFavoritfilmer.addAll(favoritfilmer);
+        });
+        findViewById(R.id.rbMainFilterMovie).setOnClickListener(v -> {
+            aaFavoritfilmer.clear();
+            aaFavoritfilmer.addAll(favoritfilmer.stream().filter(f -> f.getType().equals(getString(R.string.search_alt_movie_key))).collect(Collectors.toList()));
+        });
+        findViewById(R.id.rbMainFilterSeries).setOnClickListener(v -> {
+            aaFavoritfilmer.clear();
+            aaFavoritfilmer.addAll(favoritfilmer.stream().filter(f -> f.getType().equals(getString(R.string.search_alt_series_key))).collect(Collectors.toList()));
+        });
+        findViewById(R.id.rbMainFilterEpisode).setOnClickListener(v -> {
+            aaFavoritfilmer.clear();
+            aaFavoritfilmer.addAll(favoritfilmer.stream().filter(f -> f.getType().equals(getString(R.string.search_alt_episode_key))).collect(Collectors.toList()));
+        });
+
         // Favoritlista
+        favoritfilmer = new ArrayList<>();
+
         lvFavoritfilmer = findViewById(R.id.lvFavoritfilmer);
         aaFavoritfilmer = new ArrayAdapter<Favoritfilm>(MainActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
         lvFavoritfilmer.setAdapter(aaFavoritfilmer);
@@ -78,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.setView(imageView);
             }
 
-            String alertMessage = String.format("Betyg: %s\n%s", favoritfilm.getValtBetyg(), favoritfilm.getPlot());
+            String alertMessage = String.format("Betyg: %s\n%s\n%s", favoritfilm.getValtBetyg(), favoritfilm.getType(), favoritfilm.getPlot());
 
             alert.setTitle(favoritfilm.getTitle());
             alert.setMessage(alertMessage);
@@ -109,20 +131,24 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // Database operations in separate thread
-        new Thread(this::populateFavoritfilmListFromDb).start();
+        new Thread(() -> populateFavoritfilmListFromDb("")).start();
 
     }
 
-    private void populateFavoritfilmListFromDb() {
+
+    private void populateFavoritfilmListFromDb(String filterType) {
 
         FavoritfilmDao favoritfilmDao = db.favoritfilmDao();
-        List<Favoritfilm> favvosar = favoritfilmDao.getAll();
-        Log.d(MainActivity.class.getCanonicalName(), "Found favvosar: " + favvosar.size());
+        favoritfilmer = favoritfilmDao.getAll();
+        Log.d(MainActivity.class.getCanonicalName(), "Found favvosar: " + favoritfilmer.size());
+
+        // filter result
+        favoritfilmer.stream().filter(f -> f.getType().equals(filterType));
 
         runOnUiThread(() -> {
             aaFavoritfilmer.clear();
-            Collections.reverse(favvosar);
-            favvosar.forEach(favoritfilm -> aaFavoritfilmer.add(favoritfilm));
+            Collections.reverse(favoritfilmer);
+            favoritfilmer.forEach(favoritfilm -> aaFavoritfilmer.add(favoritfilm));
         });
 
     }

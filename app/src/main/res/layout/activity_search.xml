@@ -89,7 +89,7 @@
         android:id="@+id/tvSokresultat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Börja med att göra en sökning"
+        android:text="@string/search_start_new"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -90,6 +90,6 @@ public class Favoritfilm {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", getTitle(), getYear());
+        return String.format("%s [%s] (%s)", getTitle(), getType(), getYear());
     }
 }

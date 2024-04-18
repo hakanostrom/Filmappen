@@ -85,6 +85,11 @@ public class SearchActivity extends AppCompatActivity {
         // db
         db = Room.databaseBuilder(getApplicationContext(), FilmappenDatabas.class, getString(R.string.database_name)).build();
 
+        // filter radios
+        findViewById(R.id.rbFilterMovie).setOnClickListener(v -> clearResultList());
+        findViewById(R.id.rbFilterSeries).setOnClickListener(v -> clearResultList());
+        findViewById(R.id.rbFilterEpisode).setOnClickListener(v -> clearResultList());
+
         // resultlist
         aaSearchResults = new ArrayAdapter<SearchResult.SingleResult>(SearchActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new ArrayList<>());
         lvSearchResults.setAdapter(aaSearchResults);
@@ -133,17 +138,22 @@ public class SearchActivity extends AppCompatActivity {
      Helper functions
      */
 
+    private void clearResultList() {
+        aaSearchResults.clear();
+        tvSokresultat.setText(R.string.search_start_new);
+    }
+
     private void doSearch(String sokord) {
 
         // Sökvilkor ('allt' är tom sträng)
         String sokvillkor = "";
 
         if (((RadioButton) findViewById(R.id.rbFilterMovie)).isChecked()) {
-            sokvillkor = "movie";
+            sokvillkor = getString(R.string.search_alt_movie_key);
         } else if (((RadioButton) findViewById(R.id.rbFilterSeries)).isChecked()) {
-            sokvillkor = "series";
+            sokvillkor = getString(R.string.search_alt_series_key);
         } else if (((RadioButton) findViewById(R.id.rbFilterEpisode)).isChecked()) {
-            sokvillkor = "episodes";
+            sokvillkor = getString(R.string.search_alt_episode_key);
         }
 
         if (sokord.isEmpty())
