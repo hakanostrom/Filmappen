@@ -12,6 +12,7 @@ Alternativt en Android-emulator. Har man möjlighet att använda _[Windows Subsy
 
 Klona repot, och öppna sedan mappen i Android Studio.
 
+Vänta till Gradle har initierat klart.
 
 > ***OBS! API-nyckeln till OMDb API är inte versionshanterad då den är att betrakta som känslig data***
 Skapa en egen API-nyckel och lägg in i filen _app/res/values/hemlig.example.xml_. Ta bort kommentar på raden i filen och ta bort 'example' från filnamnet. Filen kommer då att ignoreras av .gitignore och riskerar inte att commitas av misstag. Däremot går det alldeles utmärkt att ha två string-resourcefiler i projektet då Android Studio kommer att läsa in båda (så länge namnen på egenskaperna är unika).
