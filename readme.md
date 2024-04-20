@@ -20,6 +20,14 @@ Skapa en egen API-nyckel och lägg in i filen _app/res/values/hemlig.example.xml
 Välj din enhet under _Running devices_ och kör sedan projektet genom _Run -> Run 'app'_.
 Detta skall räcka för att starta appen på din enhet eller emulator.
 
+## Kör tester
+
+**Enhetstester** (unit tests) körs i Android Studio som vanliga java-enhetstester i IntelliJ. Dvs att exempelvis högerklicka på _test_-paketet och välja "Run tests in...".
+Dessa tester exekveras på utvecklingsdatorn.
+
+**Instrumentella tester** (android/UI tests) startas på samma sätt, men på det paket som benämns _androidTest_
+Dessa tester exekveras på utvecklingsenheten. Så ha den redo och aktiverad (skärmen).
+
 ## Bibliotek och tekniker
 
 **Retrofit** för REST-kommunikation
