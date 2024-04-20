@@ -106,8 +106,8 @@ public class SearchActivity extends AppCompatActivity {
                     .setView(numberPicker)
                     .setTitle(selectedItem.title)
                     .setMessage("Vill du lägga till denna film som en favorit? Ange även ditt betyg (1-10)")
-                    .setPositiveButton("Ja", null)
-                    .setNegativeButton("Avbryt", null);
+                    .setPositiveButton(android.R.string.yes, null)
+                    .setNegativeButton(android.R.string.no, null);
 
             // Överlagra onClick i efterhand för att göra det möjligt att förhindra stängning
             alert.show()

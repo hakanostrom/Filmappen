@@ -3,6 +3,7 @@ package se.hakanostrom.filmappen;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -119,6 +121,23 @@ public class MainActivity extends AppCompatActivity {
 
         // db
         db = FilmappenDatabas.getInstance(getApplicationContext());
+
+        try {
+            // version display
+            TextView tvVersion = findViewById(R.id.tvVersion);
+            String versionText = "v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            tvVersion.setText(versionText);
+            tvVersion.setOnClickListener(v -> {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getString(R.string.app_name))
+                        .setMessage(R.string.app_description)
+                        .setPositiveButton(android.R.string.yes, null)
+                        .show();
+            });
+
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">Filmappen</string>
+    <string name="app_description">Sök bland filmer och tv-serier och spara just dina favoriter. Betygsätt enskilda titlar och spara dessa i din mobil.
+        \n\n<b>Bibliotek</b>
+        \nRetrofit för REST-kommunikation\nROOM database för att wrappa och förenkla Androids stöd för SQLite
+    </string>
+
+</resources>
