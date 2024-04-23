@@ -15,7 +15,7 @@ public class FavoritfilmTest {
     Favoritfilm favoritfilm;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         favoritfilm = new Favoritfilm()
                 .setTitle(FAVORITFILM_TITLE)
                 .setType(FAVORITFILM_TYPE)

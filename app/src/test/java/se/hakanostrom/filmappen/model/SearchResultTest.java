@@ -13,7 +13,7 @@ public class SearchResultTest {
     SearchResult.SingleResult singleResult;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         singleResult = new SearchResult.SingleResult();
         singleResult.title = SINGLERESULT_TITLE;
         singleResult.year = SINGLERESULT_YEAR;
