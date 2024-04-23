@@ -25,7 +25,7 @@ Detta skall räcka för att starta appen på din enhet eller emulator.
 **Enhetstester** (unit tests) körs i Android Studio som vanliga java-enhetstester i IntelliJ. Dvs att exempelvis högerklicka på _test_-paketet och välja "Run tests in...".
 Dessa tester exekveras på utvecklingsdatorn.
 
-**Instrumentella tester** (android/UI tests) startas på samma sätt, men på det paket som benämns _androidTest_
+**Instrumenterade tester** (instrumented tests) startas på samma sätt, men på det paket som benämns _androidTest_
 Dessa tester exekveras på utvecklingsenheten. Så ha den redo och aktiverad (skärmen).
 
 ## Bibliotek och tekniker
